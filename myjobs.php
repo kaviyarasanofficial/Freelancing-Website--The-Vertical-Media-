@@ -236,7 +236,7 @@ li.active a:before{
           <a href="#tab3" data-toggle="tab">My Project Proposals</a>
         </li>
         <li>
-          <a href="#tab4" data-toggle="tab">Settings</a>
+          <a href="#tab4" data-toggle="tab">My Propsals</a>
         </li>
         <li>
           <a href="#tab5" data-toggle="tab">Settings2</a>
@@ -253,7 +253,7 @@ li.active a:before{
         </div>
         <div class="tab-pane active" id="tab2">
       <div class="container  ">
-        <div class="row jobscard">
+<div class="row jobscard">
             <?php $i = 0; ?>
             <?php foreach ($proj as $projs): ?>
                 <div class="col-md-3 col-sm-6 item">
@@ -314,7 +314,7 @@ li.active a:before{
           
             
         <div class="container">
-    <div class="row jobscard">
+<div class="row jobscard">
         <?php $i = 0; ?>
         <?php foreach ($proj as $projs): ?>
             <?php
@@ -362,7 +362,13 @@ li.active a:before{
           
         </div>
         <div class="tab-pane" id="tab4">
-          <p>Tab 4 content goes here...</p>
+          <p>
+            
+
+
+
+          
+          </p>
         </div>
         <div class="tab-pane" id="tab5">
           <p>Tab 5 content goes here...</p>
