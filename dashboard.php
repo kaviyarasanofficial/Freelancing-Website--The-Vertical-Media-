@@ -38,7 +38,7 @@ if (isset($_SESSION['dashboard_id']) && isset($_SESSION['user_email'])) {
         $City = $row['City'];
         $State = $row['State'];
         $ZIP = $row['ZIP'];
-        $name = $row['Name']; // Assuming the name column in your table is named 'Name'
+        // $name = $row['Name']; // Assuming the name column in your table is named 'Name'
 
         // ... Continue with the rest of your processing
     }
@@ -49,6 +49,13 @@ if (isset($_SESSION['dashboard_id']) && isset($_SESSION['user_email'])) {
     header("Location: login.php");
     exit;
 }
+
+# Book helper function
+include "php/projfunc.php";
+$proj = get_all_myproj($conn,$user_email);
+
+
+
 ?>
 
 
@@ -58,6 +65,9 @@ if (isset($_SESSION['dashboard_id']) && isset($_SESSION['user_email'])) {
 <html>
 <head>
     <title>Individual Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.tailwindcss.com/v3.0.2/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -213,7 +223,7 @@ li.active a:before{
    
 
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs mt-5">
         <li class="active">
           <a href="#tab1" data-toggle="tab">Home</a>
         </li>
@@ -238,10 +248,56 @@ li.active a:before{
     </p>
         </div>
         <div class="tab-pane" id="tab2">
-          <p>Tab 2 content goes here...</p>
+          
+
+
+
+
         </div>
         <div class="tab-pane" id="tab3">
-          <p>Tab 3 content goes here...</p>
+         
+        <div class="container">
+    <div class="row jobscard">
+        <?php $i = 0; ?>
+        <?php foreach ($proj as $projs): ?>
+            <?php
+            // Check if there are proposals for this project
+            $proposalQuery = "SELECT * FROM betproject WHERE proj_id = {$projs['id']}";
+            $proposalResult = mysqli_query($conn, $proposalQuery);
+            
+            // Skip displaying this project if there are no proposals
+            if ($proposalResult && mysqli_num_rows($proposalResult) === 0) {
+                continue;
+            }
+            ?>
+            <div class="col-md-3 col-sm-6 item">
+                <div class="card item-card card-block">
+                    <?php
+                    // Get the thumbnail URL from the $projs array
+                    $thumbnail_url = $projs['thumbnail_url'];
+                    // Remove the first occurrence of 'thumbnails/' in the URL to fix the duplication
+                    $thumbnail_url = preg_replace('/^thumbnails\//', '', $thumbnail_url);
+                    ?>
+                    <img src="php/thumbnails/<?= $thumbnail_url ?>" alt="Photo of sunset">
+                    <h5 class="item-card-title mt-3 mb-3"><?= $projs['Name'] ?></h5>
+                    
+                    <p class="card-text">
+                        <?= $projs['catagories'] ?><br>
+                        <?= $projs['budget'] ?>
+                    </p>
+                    <form method="post" action="viewproposal.php">
+                        <!-- A separate PHP script to handle project deletion -->
+                        <input type="hidden" name="id" value="<?= $projs['id'] ?>">
+                        <!-- Pass the project ID as a hidden input -->
+                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" name="viewproposal">View proposal</button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+
+
         </div>
         <div class="tab-pane" id="tab4">
           <p>Tab 4 content goes here...</p>
