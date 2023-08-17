@@ -136,6 +136,12 @@ include "pages/php/counts.php";
                         <span>Projects Manage</span>
                       </a>
                     </li>
+                    <li>
+                      <a href="Pages/bedprojects.php" class="nav-link px-3">
+                        <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                        <span>Bedding Projects</span>
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </li>

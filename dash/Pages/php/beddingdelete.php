@@ -1,15 +1,14 @@
-
 <?php
 // delete.php
 
 include "conn.php"; // Connect to the database
 
-if (isset($_GET['id'])) {
-    $id = urldecode($_GET['id']);
+if (isset($_GET['proj_id'])) {
+    $proj_id = urldecode($_GET['proj_id']);
 
     // Use prepared statements to avoid SQL injection
-    $stmt = $conn->prepare("SELECT * FROM catagorie WHERE id = ?");
-    $stmt->bind_param("s", $id);
+    $stmt = $conn->prepare("SELECT * FROM betproject WHERE proj_id = ?");
+    $stmt->bind_param("s", $proj_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -22,12 +21,12 @@ if (isset($_GET['id'])) {
     }
 
     // Delete the record with the given id
-    $delete_stmt = $conn->prepare("DELETE FROM catagorie WHERE id = ? LIMIT 1");
-    $delete_stmt->bind_param("s", $id);
+    $delete_stmt = $conn->prepare("DELETE FROM betproject WHERE proj_id = ? LIMIT 1");
+    $delete_stmt->bind_param("s", $proj_id);
     $delete_stmt->execute();
     $delete_stmt->close();
 
-    header("Location: ../addcat.php");
+    header("Location: ../bedprojects.php");
 } else {
     // No id provided in the URL
     echo "Invalid request. Please provide an 'id' parameter.";
@@ -35,5 +34,3 @@ if (isset($_GET['id'])) {
 
 $conn->close();
 ?>
-
-
