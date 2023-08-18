@@ -60,6 +60,17 @@ $proj = get_all_myproj($conn,$user_email);
     header("Location: login.php");
     exit;
 }
+
+
+
+if (isset($_SESSION['payment_status']) && $_SESSION['payment_status'] === 'paid') {
+  $buttonText = 'Paid';
+  $buttonClass = 'paid_button'; // Add a custom CSS class for styling if needed
+} else {
+  $buttonText = 'Pay Amount';
+  $buttonClass = 'buy_now';
+}
+
 ?>
 
 
@@ -77,6 +88,7 @@ $proj = get_all_myproj($conn,$user_email);
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
 <style>
  body
 {
@@ -227,7 +239,7 @@ li.active a:before{
 
     <ul class="nav nav-tabs mt-5">
         <li >
-          <a href="#tab1" onclick="window.location.href='dashboard.php';" data-toggle="tab">Home</a>
+              <a href="#tab1" onclick="window.location.href='dashboard.php';" data-toggle="tab">Home</a>
         </li>
         <li class="active">
           <a href="#tab2" data-toggle="tab">My Projects </a>
@@ -247,13 +259,13 @@ li.active a:before{
         <div class="tab-pane "  id="tab1">
           
           <p><h2>Welcome, <?php echo $dashboard_id; ?>!  <?php echo $user_name; ?></h2>
-    <h2><?php echo $Country; ?>! </h2>
-    <!-- <p>This is your individual dashboard.</p> -->
-    </p>
+          <h2><?php echo $Country; ?>! </h2>
+          <!-- <p>This is your individual dashboard.</p> -->
+      </p>
         </div>
         <div class="tab-pane active" id="tab2">
       <div class="container  ">
-<div class="row jobscard">
+ <div class="row jobscard">
             <?php $i = 0; ?>
             <?php foreach ($proj as $projs): ?>
                 <div class="col-md-3 col-sm-6 item">
@@ -273,7 +285,8 @@ li.active a:before{
                             
                             <?= $projs['catagories'] ?><br>
                             <?= $projs['budget'] ?>
-
+                            <br>
+                            <br><a href="javascript:void(0)" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 buy_now" data-amount=" <?= $projs['budget'] ?>" data-id="1">Pay Amount</a> <br>
                         </p>
                         <form method="post" action="php/delete_project.php"> <!-- A separate PHP script to handle project deletion -->
               <input type="hidden" name="id" value="<?= $projs['id'] ?>"> <!-- Pass the project ID as a hidden input -->
@@ -381,7 +394,56 @@ li.active a:before{
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-    
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Include jQuery library -->
+
+<script>
+$(document).ready(function() {
+    $('body').on('click', '.buy_now', function(e) {
+        var paymentButton = $(this); // Store the clicked button element
+        var totalAmount = paymentButton.attr("data-amount");
+        var product_id = paymentButton.attr("data-id");
+        
+        var options = {
+            "key": "rzp_test_WzhAnPK5Y2z8DU",
+            "amount": (totalAmount * 100), // 2000 paise = INR 20
+            "name": "Vertical Media",
+            "description": "Payment",
+            "image": "thumbnail_url",
+            "handler": function(response) {
+                $.ajax({
+                    url: 'payment-proccess.php',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        totalAmount: totalAmount,
+                        product_id: product_id,
+                        payment_status: 'paid',
+                    },
+                    success: function(msg) {
+                        // Update the button text to "Paid" upon successful payment
+                        paymentButton.text("Paid");
+                        paymentButton.attr("disabled", "disabled"); // Optionally disable the button
+                        paymentButton.removeClass("buy_now"); // Optionally remove the buy_now class
+                        // Redirect to success page
+                        // window.location.href = 'success.php';
+                    }
+                });
+            },
+            "theme": {
+                "color": "#528FF0"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+    });
+});
+</script>
+
 
 <br><br>
 <a href="logout.php">Logout</a>

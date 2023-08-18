@@ -1,6 +1,15 @@
 <?php
 
 include "pages/php/counts.php";
+
+
+
+# Book helper function
+include "pages/php/payfunc.php";
+$payments = get_all_payments($conn);
+
+
+
 ?>
 
 
@@ -10,6 +19,7 @@ include "pages/php/counts.php";
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="refresh" content="20">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link
@@ -140,6 +150,12 @@ include "pages/php/counts.php";
                       <a href="Pages/bedprojects.php" class="nav-link px-3">
                         <span class="me-2"><i class="bi bi-speedometer2"></i></span>
                         <span>Bedding Projects</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="Pages/payments.php" class="nav-link px-3">
+                        <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                        <span>Payments</span>
                       </a>
                     </li>
                   </ul>
@@ -296,14 +312,15 @@ echo "<p>" . $catagorie_name . "</p>";
               </div>
             </div>
           </div>
+
           <div class="col-md-3 mb-3">
-            <div class="card bg-danger text-white h-100">
-              <div class="card-body py-5">Customer Queries <h1><?php
+            <div class="card bg-primary text-white h-100">
+              <div class="card-body py-5">Total Transaction<h1><?php
 // Your PHP code to get the user count from MySQL (as shown in the previous response)
 
 // Output the user count inside an HTML paragraph tag
-echo "<p>" . $contact . "</p>";
-?> </div></h1>
+echo "<p>₹ " . $TotalamountTransaction . "</p>";
+?></div></h1>
               <div class="card-footer d-flex">
                 View Details
                 <span class="ms-auto">
@@ -312,7 +329,76 @@ echo "<p>" . $contact . "</p>";
               </div>
             </div>
           </div>
-        </div>
+
+          <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white h-100">
+              <div class="card-body py-5">Approved Bidding <h1><?php
+// Your PHP code to get the user count from MySQL (as shown in the previous response)
+
+// Output the user count inside an HTML paragraph tag
+echo "<p>" . $approvedbidding . "</p>";
+?></div></h1>
+              <div class="card-footer d-flex">
+                View Details
+                <span class="ms-auto">
+                  <i class="bi bi-chevron-right"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white h-100">
+              <div class="card-body py-5">Declined Bidding <h1><?php
+// Your PHP code to get the user count from MySQL (as shown in the previous response)
+
+// Output the user count inside an HTML paragraph tag
+echo "<p>" . $declinedbidding . "</p>";
+?></div></h1>
+              <div class="card-footer d-flex">
+                View Details
+                <span class="ms-auto">
+                  <i class="bi bi-chevron-right"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-3 mb-3">
+            <div class="card bg-danger text-white h-100">
+              <div class="card-body py-5">Bidding Counts<h1><?php
+// Your PHP code to get the user count from MySQL (as shown in the previous response)
+
+// Output the user count inside an HTML paragraph tag
+                echo "<p>" . $biddingcounts . "</p>";
+                      ?> </div></h1>
+              <div class="card-footer d-flex">
+                View Details
+                <span class="ms-auto">
+                  <i class="bi bi-chevron-right"></i>
+                </span>
+              </div>
+            </div>
+            </div>
+            <div class="col-md-3 mb-3">
+            <div class="card bg-danger text-white h-100">
+              <div class="card-body py-5">Customer Queries <h1><?php
+// Your PHP code to get the user count from MySQL (as shown in the previous response)
+
+// Output the user count inside an HTML paragraph tag
+                echo "<p>" . $contact . "</p>";
+                      ?> </div></h1>
+              <div class="card-footer d-flex">
+                View Details
+                <span class="ms-auto">
+                  <i class="bi bi-chevron-right"></i>
+                </span>
+              </div>
+            </div>
+            </div>
+          </div>
+          
         <div class="row">
           <div class="col-md-6 mb-3">
             <div class="card h-100">
@@ -352,24 +438,20 @@ echo "<p>" . $contact . "</p>";
                   >
                     <thead>
                       <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Office</th>
-                        <th>Age</th>
-                        <th>Start date</th>
-                        <th>Salary</th>
+                      <th>Razorpay_payment_id</th>
+                        <th>product_id</th>
+                        <th>totalAmount</th>
                       </tr>
                     </thead>
                     <tbody>
+                    <?php foreach ($payments as $pay): ?>
                       <tr>
-                        <td>Tiger Nixon</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011/04/25</td>
-                        <td>$320,800</td>
+                      <td><?= $pay['razorpay_payment_id'] ?></td>
+                            <td><?= $pay['product_id'] ?></td>
+                            <td><?= $pay['totalAmount'] ?></td>
                       </tr>
-                      <tr>
+                      <?php endforeach; ?>
+                      <!-- <tr>
                         <td>Garrett Winters</td>
                         <td>Accountant</td>
                         <td>Tokyo</td>
@@ -826,7 +908,7 @@ echo "<p>" . $contact . "</p>";
                         <th>Age</th>
                         <th>Start date</th>
                         <th>Salary</th>
-                      </tr>
+                      </tr> -->
                     </tfoot>
                   </table>
                 </div>
